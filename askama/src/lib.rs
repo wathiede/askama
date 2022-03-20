@@ -81,6 +81,9 @@ pub trait Template {
     /// Renders the template to the given `writer` buffer
     fn render_into(&self, writer: &mut (impl std::fmt::Write + ?Sized)) -> Result<()>;
 
+    /// The absolute path of template's source
+    const PATH: &'static str;
+
     /// The template's extension, if provided
     const EXTENSION: Option<&'static str>;
 
@@ -101,6 +104,9 @@ pub trait DynTemplate {
     /// Renders the template to the given `writer` buffer
     fn dyn_render_into(&self, writer: &mut dyn std::fmt::Write) -> Result<()>;
 
+    /// Helper function to inspect the template's path
+    fn path(&self) -> &'static str;
+
     /// Helper function to inspect the template's extension
     fn extension(&self) -> Option<&'static str>;
 
@@ -118,6 +124,10 @@ impl<T: Template> DynTemplate for T {
 
     fn dyn_render_into(&self, writer: &mut dyn std::fmt::Write) -> Result<()> {
         <Self as Template>::render_into(self, writer)
+    }
+
+    fn path(&self) -> &'static str {
+        Self::PATH
     }
 
     fn extension(&self) -> Option<&'static str> {
@@ -168,6 +178,8 @@ mod tests {
             ) -> askama_shared::Result<()> {
                 Ok(writer.write_str("test")?)
             }
+
+            const PATH: &'static str = "/path/to/test.txt";
 
             const EXTENSION: Option<&'static str> = Some("txt");
 

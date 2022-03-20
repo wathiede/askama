@@ -157,6 +157,10 @@ impl<'a, S: std::hash::BuildHasher> Generator<'a, S> {
         buf.writeln("::askama::Result::Ok(())")?;
         buf.writeln("}")?;
 
+        buf.writeln("const PATH: &'static ::std::primitive::str = ")?;
+        buf.writeln(&format!("{:?}", self.input.path))?;
+        buf.writeln(";")?;
+
         buf.writeln("const EXTENSION: ::std::option::Option<&'static ::std::primitive::str> = ")?;
         buf.writeln(&format!("{:?}", self.input.extension()))?;
         buf.writeln(";")?;
